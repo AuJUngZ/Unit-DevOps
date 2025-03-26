@@ -1,0 +1,25 @@
+name: "Build and Push Docker Image to ECR"
+
+on:
+  push:
+    tags:
+      - "v*.*.*" # Trigger on version tags (e.g., v1.0.0)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: us-east-1
+      - name: Build and Push Docker Image
+        run: |
+          TAG=${{ github.ref_name }}
+          docker build -t ${{ secrets.ECR_REPOSITORY }}:$TAG ./simple_node_app
+          docker push ${{ secrets.ECR_REPOSITORY }}:$TAG
