@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/AuJUngZ/Unit-DevOps/argo-config/apps
+    repoURL: https://github.com/AuJUngZ/Unit-DevOps
     targetRevision: main
-    path: simple-node-app
+    path: argo-config/apps/simple-node-app
   destination:
     server: https://kubernetes.default.svc
     namespace: nodejs-app
