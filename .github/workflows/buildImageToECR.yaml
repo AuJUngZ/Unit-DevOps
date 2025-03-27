@@ -3,32 +3,28 @@ on:
   push:
     tags:
       - "v*.*.*"
-
 permissions:
-  contents: read
+  contents: write
   id-token: write
-
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-ecr-access
           aws-region: us-east-1
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Build, Tag, and Push Docker Image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -38,3 +34,24 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG ./simple-node-app
           docker push $ECR_REGISTRY/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG
+
+  update-deployment:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update Deployment Manifest
+        env:
+          ECR_REGISTRY_ALIAS: ${{ secrets.ECR_REGISTRY_ALIAS }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
+        run: |
+          # Update the deployment.yaml file with the new image tag
+          sed -i "s|image: public.ecr.aws/.*/simple-node-app:.*|image: public.ecr.aws/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG|g" argo-config/apps/deployment.yaml
+
+          # Commit and push the changes
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add argo-config/apps/deployment.yaml
+          git commit -m "Update deployment image to $IMAGE_TAG"
+          git push
