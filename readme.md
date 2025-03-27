@@ -21,6 +21,7 @@
 
 - Provision the VPC and EKS cluster using given terraform script. **I hope you have setup your AWS credentials and have access to the AWS account before running the script.**
   ```bash
+  # Note: your credentials need to have enough permission to create VPC and EKS cluster.
   $ cd terraform
   $ terraform init
   $ terraform apply -auto-approve
