@@ -65,6 +65,7 @@
 
 - All of these setups are working for demonstration of Gitops and CI/CD pipeline.
 - The operation start when you create new tag in the repository with correct format like `v1.0.0` then the github action workflow will be triggered to build the docker image and push it to AWS ECR public repository then update the ArgoCD application configuration to let ArgoCD rollout the new version of the application.
+- Github action workflow will not work if you forgot to create secrets variable in your forked repository. All variable that you need is already appeared on top of this readme file on `Setup` section.
 
 ## Note
 
