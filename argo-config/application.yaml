@@ -1,18 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-applications
+  name: nodejs-app
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/AuJUngZ/Unit-DevOps
-    targetRevision: HEAD
-    path: apps
+    repoURL: https://github.com/AuJUngZ/Unit-DevOps/argo-config/apps
+    targetRevision: main
+    path: simple-node-app
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: nodejs-app
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
