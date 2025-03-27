@@ -9,6 +9,14 @@
 
 ## Setup
 
+- Fork this repository to your own github account.
+- Add secrets variable to your forked repository.
+  - AWS_ACCOUNT_ID: Your AWS account ID.
+  - ECR_REGISTRY_ALIAS: Your ECR public repository alias.
+  - ECR_REPOSITORY: Your ECR public repository name.
+- Edit ArgoCD configuration to point to your ECR public repository.
+  - Edit the `deployment.yaml` file in the `argo-config` folder.
+
 ### If you want to test full operation on EKS cluster, you need to provision the cluster before.
 
 - Provision the VPC and EKS cluster using given terraform script. **I hope you have setup your AWS credentials and have access to the AWS account before running the script.**
@@ -37,7 +45,7 @@
     $ kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d && echo
     # for windows
     $ kubectl get secret argocd-initial-admin-secret -n argocd
-    # then copy the password from the output and paste it some decoder tool to decode it then use it to login to ArgoCD UI.
+    # then copy the password from the output and paste it some base64 decoder tool to decode it then use it to login to ArgoCD UI.
   ```
 - If you can access ArgoCD UI now you need to setup the ArgoCD application to deploy the simple nodejs applicaltion.
   - All configuration are already provided in the `argo-config` folder.
@@ -59,7 +67,11 @@
 
 ## Note
 
-**Everything in this repository is base on my current knowledge and experience at the time of wrtiting this. I hope everyone can understand easily and I open to any feedback and suggestion.**
+- **Everything in this repository is base on my current knowledge and experience at the time of wrtiting this. I hope everyone can understand easily and I open to any feedback and suggestion.**
+
+## Troubleshooting
+
+- **ArgoCD is will not work if you try to run it because I config `deployment.yaml` to point to my ECR public repository that I will removed it after the test. So you need to change the image name in the `deployment.yaml` file to point to your ECR public repository**
 
 ## Key to improvement
 
