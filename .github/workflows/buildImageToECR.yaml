@@ -54,4 +54,4 @@ jobs:
           git config user.email github-actions@github.com
           git add argo-config/apps/simple-node-app/deployment.yaml
           git commit -m "Update deployment image to $IMAGE_TAG"
-          git push
+          git push origin main
