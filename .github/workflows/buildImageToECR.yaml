@@ -47,7 +47,7 @@ jobs:
           IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
         run: |
           # Update the deployment.yaml file with the new image tag
-          sed -i "s|image: public.ecr.aws/.*/simple-node-app:.*|image: public.ecr.aws/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG|g" argo-config/apps/deployment.yaml
+          sed -i "s|image: public.ecr.aws/.*/simple-node-app:.*|image: public.ecr.aws/$ECR_REGISTRY_ALIAS/$ECR_REPOSITORY:$IMAGE_TAG|g" argo-config/apps/simple-node-app/deployment.yaml
 
           # Commit and push the changes
           git config user.name github-actions
