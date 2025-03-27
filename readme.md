@@ -1,4 +1,4 @@
-# DevOps Assignment test for UNIT COMPANY LIMITED
+# Simplyfied GitOps and CI/CD pipeline with ArgoCD and AWS ECR public repository
 
 ## Content
 
